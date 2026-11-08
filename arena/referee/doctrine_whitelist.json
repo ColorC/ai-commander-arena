@@ -1,0 +1,45 @@
+{
+  "source": "materials/11 P0.8: the 16 GetUnitDoctrine fields present on all 18 unit classes, each matched in the FM01 SOP screen",
+  "fields": [
+    "acceptable_losses",
+    "carriers_when_empty",
+    "direct_support",
+    "disembark_range_from_end_of_path",
+    "disembark_range_from_enemy",
+    "fire_discipline",
+    "minefield_contact",
+    "movement_preferences",
+    "readiness_action",
+    "readiness_recover_to",
+    "readiness_trigger_at",
+    "relocate_when",
+    "resupply_action",
+    "resupply_recover_to",
+    "resupply_trigger_at",
+    "stand_off_range"
+  ],
+  "values_source": "seen: the values GetUnitDoctrine returned in the P0 probes and the P1 calibration (the probes' doctrine.json files, 2026-11-01), written as the game writes them; manual: the other options FM01 23.2-23.5 names, spelled the way the seen ones are (not yet probed). closed: the manual lists every option, anything else is refused; open: the manual lists none, other values only get a warning. A list field takes a list of these strings.",
+  "values": {
+    "acceptable_losses": {"closed": true, "seen": ["Do or Die", "Substantial", "Moderate"], "manual": ["Minimal"]},
+    "fire_discipline": {"closed": true, "seen": ["Hold until fired on", "Short Range (1/3 Max)", "Medium Range (2/3 Max)", "Maximum Range"],
+                        "manual": ["Refuse Fire", "Point Blank (0 to 1 hex)"]},
+    "relocate_when": {"closed": true, "seen": ["After each fire mission", "While enemy spotted", "After receiving any fire", "After receiving direct fire",
+                                               "After taking indirect fire losses", "Stance Only"],
+                      "manual": ["After all fire missions", "After taking any losses", "After taking direct fire losses"]},
+    "direct_support": {"closed": true, "seen": ["All", "Same Group (or Lower)"], "manual": ["Specified Unit (and Lower)", "None (Refuse All)"]},
+    "minefield_contact": {"closed": true, "seen": ["In-Stride Breach"], "manual": ["Ignore and Run", "Stop and Reduce"]},
+    "carriers_when_empty": {"closed": true, "seen": ["Hide Nearby", "Support Passengers"], "manual": []},
+    "movement_preferences": {"closed": true, "list": true, "seen": ["Concealed movement", "Road movement", "Contamination avoidance"], "manual": ["Direct path"]},
+    "readiness_action": {"closed": false, "seen": ["Recover for Minutes"], "manual": []},
+    "resupply_action": {"closed": false, "seen": ["Recover to %"], "manual": []}
+  },
+  "numbers": {
+    "stand_off_range": [0, 20],
+    "disembark_range_from_end_of_path": [0, 20],
+    "disembark_range_from_enemy": [0, 20],
+    "readiness_trigger_at": [0, 100],
+    "resupply_trigger_at": [0, 100],
+    "resupply_recover_to": [0, 100],
+    "readiness_recover_to": [0, 1000]
+  }
+}

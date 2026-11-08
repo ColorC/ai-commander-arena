@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>HOI4 glb preview</title>
+<style>html,body{margin:0;background:#2a2a2a}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"../vendor/three.module.js","three/addons/":"../vendor/addons/"}}</script>
+</head><body>
+<script type="module">
+// Contact sheet of converted glbs: ?dir=<file URL of the glb folder>&names=a,b,c&anim=attack&t=0.4&cols=6
+// Every cell: the model at its own scale (fitted), posed with clip `anim` at time t (s). window.PREVIEW = info per model.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const q = new URLSearchParams(location.search);
+const dir = q.get('dir'), names = q.get('names').split(','), anim = q.get('anim') || 'idle', T = +(q.get('t') || 0), cols = +(q.get('cols') || 6);
+const CW = 320, CH = 260, rows = Math.ceil(names.length / cols);
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(CW * cols, CH * rows); renderer.setScissorTest(true); renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+const loader = new GLTFLoader(), info = [];
+const scenes = [];
+for (const n of names) {
+  const g = await loader.loadAsync(dir + n + '.glb');
+  const sc = new THREE.Scene(); sc.background = new THREE.Color(0x3a3d40);
+  sc.add(new THREE.HemisphereLight(0xffffff, 0x444433, 1.6)); const d = new THREE.DirectionalLight(0xffffff, 2.2); d.position.set(3, 5, 4); sc.add(d);
+  sc.add(g.scene);
+  const mixer = new THREE.AnimationMixer(g.scene);
+  const clip = anim === 'bind' ? null : g.animations.find(a => a.name === anim) || g.animations.find(a => a.name === 'idle');
+  if (clip) { mixer.clipAction(clip).play(); mixer.setTime(Math.min(T, clip.duration)); }
+  g.scene.updateMatrixWorld(true);
+  const bb = new THREE.Box3(); g.scene.traverse(o => { if (o.isSkinnedMesh) { o.computeBoundingBox(); const b = o.boundingBox.clone().applyMatrix4(o.matrixWorld); bb.union(b); } else if (o.isMesh) bb.expandByObject(o); });
+  const size = bb.getSize(new THREE.Vector3()), c = bb.getCenter(new THREE.Vector3());
+  const grid = new THREE.GridHelper(Math.max(size.x, size.z) * 1.6, 8, 0x777777, 0x555555); grid.position.y = bb.min.y; sc.add(grid);
+  // arrow on +z (glTF forward expected)
+  const ar = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, bb.min.y + 0.01, 0), Math.max(size.x, size.z) * 0.8, 0xff3030); sc.add(ar);
+  const nodes = {}; g.scene.traverse(o => { if (/barrel_tip|muzzle|turret|rotor|propel|Right_Hand_node$|loc:/i.test(o.name)) nodes[o.name] = o.getWorldPosition(new THREE.Vector3()).toArray().map(x => +x.toFixed(3)); });
+  const cam = new THREE.PerspectiveCamera(30, CW / CH, 0.01, 1000);
+  const r = Math.max(size.x, size.y, size.z) * 1.9;
+  cam.position.set(c.x + r * 0.75, c.y + r * 0.55, c.z + r * 0.9); cam.lookAt(c);
+  scenes.push({ sc, cam });
+  info.push({ n, size: size.toArray().map(x => +x.toFixed(3)), min: bb.min.toArray().map(x => +x.toFixed(3)), anims: g.animations.map(a => [a.name, +a.duration.toFixed(2)]), nodes });
+}
+scenes.forEach((s, k) => { const x = (k % cols) * CW, y = (rows - 1 - Math.floor(k / cols)) * CH; renderer.setViewport(x, y, CW, CH); renderer.setScissor(x, y, CW, CH); renderer.render(s.sc, s.cam); });
+window.PREVIEW = info;
+</script></body></html>

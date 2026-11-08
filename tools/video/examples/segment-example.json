@@ -1,0 +1,44 @@
+{
+  "segment": "EX",
+  "segment_title": "格式示例（两拍）",
+  "title": "格式示例：一拍全景推入、一拍定格口播",
+  "id": "example",
+  "base": "./shot-example-base.js",
+  "out_shot": "examples/shot-example.js",
+  "mp4": "example.mp4",
+  "timeline": "examples/segment-example-timeline.md",
+  "still_prefix": "EX",
+  "h0": "07:00",
+  "duration": "auto",
+  "cpm": 260,
+  "cams": {
+    "wide": { "at": [12.0, 8.5], "dist": 30, "pitch": 64, "yaw": 0, "focus": 0.52, "blur": 0.6 },
+    "mid": { "at": 2118, "dist": 10.5, "pitch": 48, "yaw": -8, "focus": 0.55, "blur": 1.0 }
+  },
+  "beats": [
+    {
+      "id": "EX01",
+      "what": "全景慢推到交战地域，游戏时钟 07:00 走到 07:20",
+      "shot": "wide",
+      "dur": 6,
+      "g": 1200,
+      "cam": ["wide", "mid"],
+      "ease": "linear",
+      "captions": [{ "at": [0.5, 5.5], "text": "07:00–07:20 双方前出" }],
+      "keys": [3]
+    },
+    {
+      "id": "EX02",
+      "what": "时钟定格，解说一句、指挥官一句",
+      "shot": "mid",
+      "dur": "auto",
+      "g": 1200,
+      "cam": ["mid", "mid"],
+      "lines": [
+        { "speaker": "Claude", "text": "这是一句示例解说词，用来演示台词怎么排时长。" },
+        { "speaker": "Kimi", "text": "这是一句示例指挥官发言。" }
+      ],
+      "tail": 0.8
+    }
+  ]
+}

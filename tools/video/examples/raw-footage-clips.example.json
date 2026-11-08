@@ -1,0 +1,15 @@
+{
+  "games": {
+    "G1": {
+      "run": "example-run/games/formal-1/a1",
+      "start": "07:00",
+      "end": "11:00",
+      "name": "示例 第 1 局",
+      "map_box": [13, 72, 1327, 1021]
+    }
+  },
+  "clips": {
+    "G1-a": { "game": "G1", "spans": [["07:10", "07:40"]] },
+    "G1-full": { "game": "G1", "spans": [["07:00", "11:00"]] }
+  }
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Arena Sand Table</title>
+<link rel="stylesheet" href="vendor/fonts.css">
+<style>html,body{margin:0;background:#15110d;overflow:hidden}canvas#gl{display:block;width:1920px;height:1080px}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
+<script src="vendor/milsymbol.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/mp4-muxer.js"></script>
+</head>
+<body>
+<canvas id="gl" width="1920" height="1080"></canvas>
+<script>
+  // ?data=<file URL of data.js from build_data.py>, ?video=<file URL of the asset root, ending in />  (render.py passes both;
+  // asset root default: <repo>/data/video/)
+  (function () {
+    var q = new URLSearchParams(location.search), s = document.createElement('script');
+    window.ARENA_VIDEO = q.get('video') || new URL('../../data/video/', location.href).href;
+    s.src = q.get('data') || 'data.js';
+    s.onload = function () { import('./sandbox.js').catch(function (e) { window.SANDBOX_ERROR = String(e && e.stack || e); }); };
+    s.onerror = function () { window.SANDBOX_ERROR = 'cannot load data script ' + s.src; };
+    document.head.appendChild(s);
+  })();
+</script>
+</body>
+</html>
